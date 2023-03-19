@@ -9,6 +9,10 @@ const userRegistration = async (body) => {
         if (!firstName || typeof firstName !== 'string' || !lastName || typeof lastName !== 'string' || !email || !password) {
             return { message: messages.invalid.replace('##name##', 'parameters'), code: 400 };
         }
+        const data: any = await getDataByEmail(email, { _id: 1, email: 1, password: 1 });
+        if (data) {
+            return { message: messages.alreadyExists.replace('##name##', 'user'), code: 400 };
+        }
         const newUser = await new user({
             first_name: firstName,
             last_name: lastName,
