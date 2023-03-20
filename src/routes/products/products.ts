@@ -1,18 +1,26 @@
 import messages from "../../helper/messages.js";
 import product from "../../models/products.js";
+import { socketserver } from "../../socket/socket.js";
 
 const productAdd = async (body) => {
     try {
-        const { name, price, description } = body;
+        const { name, price, description } :{name:string, price: number, description:string } = body;
         if (!name || typeof name !== 'string' || !price) {
             return { message: messages.invalid.replace('##name##', 'parameters'), code: 400 };
         }
-        const newUser = new product({
+        const newProduct = await new product({
             name: name,
             price,
             description,
         }).save();
-        if (newUser) {
+        if (newProduct) {
+            console.log('*********************');
+            // server.send('product is created');
+            // socketserver.on('message', data => {
+                socketserver.clients.forEach(client => {
+                  client.send(JSON.stringify(newProduct));
+                })
+            //   })
             return { code: 200 };
         }
         return { code: 400, message: messages.fail };
@@ -67,12 +75,10 @@ const getProduct= async(queryParams:any)=>{
 const updateProduct = async(body:{name:string, description:string, price:number}, queryData)=>{
     try {
         const {productId}: {productId: string} = queryData;
-        console.log(productId);
         if(!productId){
             return { code: 400, message: messages.invalid.replace('##name##', 'parameter')};
         }
         const updatedProduct = await product.findByIdAndUpdate(productId, body, {new: true});
-        console.log(updatedProduct);
         if(updatedProduct){
             return { code: 200, message: messages.success , data: updatedProduct };
         }

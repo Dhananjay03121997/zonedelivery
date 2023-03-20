@@ -19,7 +19,6 @@ const auth = async (req, res, next) => {
         req.user = userData;
         next();
     } catch (error) {
-        console.log('ERROR', error);
         return commonResponse({code:401, message: 'unauthenticated request'}, res);
     }
 

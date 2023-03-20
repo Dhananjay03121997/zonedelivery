@@ -21,7 +21,6 @@ router.get('/getproduct', auth, async(req,res)=>{
 })
 
 router.patch('/updateproduct', auth, async(req,res)=>{
-  console.log(req.query);
   const data  = await updateProduct(req.body, req.query);
   return commonResponse(data, res);
 })

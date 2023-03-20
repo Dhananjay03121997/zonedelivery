@@ -1,13 +1,14 @@
 import {WebSocketServer} from 'ws';
+const socketserver = new WebSocketServer({ port: 8080 })
 
-const server = new WebSocketServer({port: 8080});
 
-server.on('connection', function connection(ws) {
-    ws.on('error', console.error);
-  
-    ws.on('message', function message(data) {
-      console.log('received: %s', data);
-    });
-  
-    ws.send('something');
-  });
+socketserver.on('connection', ws => { 
+  ws.send('connection established')
+  ws.on('close', () => console.log('Client has disconnected!'))
+
+  ws.onerror = function () {
+    console.log('websocket error')
+  }
+ })
+
+export { socketserver }

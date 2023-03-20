@@ -47,7 +47,6 @@ const userLogin = async (body) => {
             return { code: 400, messages: messages.fail }
         }
         delete data['password'];
-        console.log(data);
         const token = await generateToken({ _id: data._doc._id });
         return {
             code: 200, data: {
